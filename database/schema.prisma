@@ -14,8 +14,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Hero {
   id Int @id @default(autoincrement())
-  email String @unique
-  name String?
+  name String
+  strength Int
+  dexterity Int
+  constitution Int
+  intelligence Int
+  wisdom Int
+  charisma Int
 }
