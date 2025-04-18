@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'src/initializers/fishery';
 import { Prisma, Hero, PrismaService } from 'src/initializers/prisma';
 
+type UnsavedHero = Prisma.HeroCreateInput;
+
 @Injectable()
-export class HeroesRepository extends Repository<Prisma.HeroCreateInput, Hero> {
+export class HeroesRepository extends Repository<UnsavedHero, Hero> {
   constructor(private readonly prisma: PrismaService) {
     super((generator) => ({ onCreate }) => {
       onCreate(async (entity) => {
@@ -24,11 +26,17 @@ export class HeroesRepository extends Repository<Prisma.HeroCreateInput, Hero> {
     });
   }
 
-  public async findAllBy(
-    where?: Partial<Prisma.HeroCreateInput>,
-  ): Promise<Hero[]> {
+  public async findAllBy(where?: Partial<UnsavedHero>): Promise<Hero[]> {
     return this.prisma.hero.findMany({ where });
+  }
+
+  public generate(partial?: Partial<UnsavedHero>): UnsavedHero {
+    return this.build(partial);
+  }
+
+  public async save(hero: Prisma.HeroCreateInput): Promise<Hero> {
+    return this.create(hero);
   }
 }
 
-export { Hero };
+export { Hero, UnsavedHero };

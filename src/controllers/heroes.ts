@@ -1,5 +1,5 @@
-import { Controller, Get, Render } from '@nestjs/common';
-import { Hero, HeroesRepository } from 'src/repositories/heroes';
+import { Controller, Get, Render, Post, Body } from '@nestjs/common';
+import { Hero, UnsavedHero, HeroesRepository } from 'src/repositories/heroes';
 
 @Controller('heroes')
 export class HeroesController {
@@ -15,5 +15,16 @@ export class HeroesController {
     }
 
     return { heroes };
+  }
+
+  @Get('hero')
+  public generate(): UnsavedHero {
+    return this.heroes.generate();
+  }
+
+  @Post()
+  public create(@Body() hero: UnsavedHero): Promise<Hero> {
+    console.log(hero);
+    return this.heroes.save(hero);
   }
 }
